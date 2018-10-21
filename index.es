@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { classNames } from 'classnames'
 import React, { Component } from 'react'
 import { PropTypes } from 'prop-types'
-import { Panel, Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap'
+import { Panel, Button, ButtonGroup, ButtonToolbar, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { get, memoize, times, partial } from 'lodash'
 
 import { reducer } from './redux'
@@ -15,8 +15,6 @@ import { layoutResizeObserver } from 'views/services/layout'
 const { dispatch } = window
 
 import i18next from 'views/env-parts/i18next'
-
-// const t = window.i18n['poi-plugin-quest-browser'].__.bind(window.i18n['poi-plugin-quest-browser']);
 
 const store = extensionSelectorFactory('poi-plugin-quest-browser');
 
@@ -57,25 +55,44 @@ const QuestPageSwitchButton = connect(
   </Button>
 )
 
-const Quest = (props) => !props.questData ? null :
-  <div className="quest-item" onClick={props.onClick}>
-    <div className="quest-type-img">
-      <img src={questTypeIcons[props.questData.api_category - 1]}/>
-    </div>
-    <div>
+const Quest = (props) => {
+  if(!props.questData)
+    return null;
+  
+  const contents = (
+    <span>
+     {(props.wikiId ? `${props.wikiId} - ` : '') + props.questData.api_title}<br/>
+     {props.useTranslations && props.translation ? props.translation : props.questData.api_detail.replace(/<br\s*\/?>/gi, '')}
+    </span>
+  )
+  console.log(contents);
+  
+  return (
+    <div className="quest-item" onClick={props.onClick}>
+      <div className="quest-type-img">
+        <img src={questTypeIcons[props.questData.api_category - 1]}/>
+      </div>
       <div>
-        {(props.wikiId ? `${props.wikiId} - ` : '') + props.questData.api_title}<br/>
-        {props.useTranslations && props.translation ? props.translation : props.questData.api_detail.replace(/<br\s*\/?>/gi, '')}
-      </div>
-      <div className="quest-resource-img">
-        <img src="assets/img/material/01.png"/>{props.questData.api_get_material[0]}
-        <img src="assets/img/material/02.png"/>{props.questData.api_get_material[1]}
-        <img src="assets/img/material/03.png"/>{props.questData.api_get_material[2]}
-        <img src="assets/img/material/04.png"/>{props.questData.api_get_material[3]}
+        <OverlayTrigger
+            placement='bottom'
+            overlay={
+              <Tooltip id={`quest-id-${props.questData.api_no}`} style={contents ? null : {display: 'none'}}>{contents}</Tooltip>
+            }
+        >
+          <div className="quest-contents">
+            {contents}
+          </div>
+        </OverlayTrigger>
+        <div className="quest-resource-img">
+          <img src="assets/img/material/01.png"/>{props.questData.api_get_material[0]}
+          <img src="assets/img/material/02.png"/>{props.questData.api_get_material[1]}
+          <img src="assets/img/material/03.png"/>{props.questData.api_get_material[2]}
+          <img src="assets/img/material/04.png"/>{props.questData.api_get_material[3]}
+        </div>
       </div>
     </div>
-  </div>
-
+  )
+}
 const QuestPanel = connect(
   (state, {activePageTabId, activeTypeTabId, handlePluginSwitch}) => ({
     activePageTabId,
@@ -111,7 +128,7 @@ const QuestPanel = connect(
 @connect((state, props) => ({
   activeTypeTabId: get(state, 'ui.activeTypeTabId', 0),
   activePageTabId: get(state, 'ui.activePageTabId', 0),
-  questInfoSwitch: get(state, 'config.plugin.poi-plugin-quest-info.enable', false) &&
+  questInfoSwitch: false && get(state, 'config.plugin.poi-plugin-quest-info.enable', false) &&
                      !get(state, 'config.poi.plugin.windowmode.poi-plugin-quest-info.enable', false),
   maxPages: get(store(state), 'maxPages', {}),
 }))
@@ -181,7 +198,6 @@ export class reactClass extends Component {
   
   handlePluginSwitch = (idx) => {
     if(this.props.questInfoSwitch) {
-      console.log("Switching with id " + idx);
       window.dispatchEvent(new CustomEvent('externalQuestChangeRequest', {detail: idx}));
       dispatch({
         type: '@@TabSwitch',
@@ -189,16 +205,6 @@ export class reactClass extends Component {
           activeMainTab: 'poi-plugin-quest-info',
         },
       });
-      dispatch({
-          type: '@@poi-plugin-quest-browser@requestQuest',
-          tabInfo: {
-            questId: idx,
-          },
-        });
-      
-      // changeMainView = () => {
-
-      // }
     }
   }
 
@@ -210,7 +216,6 @@ export class reactClass extends Component {
   componentDidMount() {
     layoutResizeObserver.observe(this.panel);
     window.addEventListener('game.response', this.handleResponse);
-    window.addEventListener('poi-plugin-quest-browser', i=>console.log(i));
   }
 
   render() {

@@ -9,8 +9,8 @@
 
 .QuestView .quest-nav-button-container {
     text-align : center;
-    width : 70%;
-    margin : 0 auto;
+    /* width : 70%; */
+    /* margin : 0 auto; */
     padding-top : 2.5%
 } 
 
@@ -19,16 +19,29 @@
 }
 
 .QuestView .quest-item  {
-    padding : 5px 0px;
     display : flex;
-    align-items : center;
+    padding : 5px 0px;
     height : 120px;
+    padding-right: 10px;
+}
+
+.QuestView .quest-contents {
+    max-height : 88px;
+    padding-right: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .QuestView .quest-type-img {
     padding-right : 5px;
 }
 
+.QuestView .quest-resource-img {
+    height : 32px;
+    margin-bottom : 0;
+    margin-top : auto;
+}
+
 .QuestView .quest-resource-img > img {
-    padding : 5px 5px 0px 15px;
+    padding : 0px 5px 0px 15px;
 }
