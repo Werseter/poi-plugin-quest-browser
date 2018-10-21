@@ -65,8 +65,6 @@ const Quest = (props) => {
      {props.useTranslations && props.translation ? props.translation : props.questData.api_detail.replace(/<br\s*\/?>/gi, '')}
     </span>
   )
-  console.log(contents);
-  
   return (
     <div className="quest-item" onClick={props.onClick}>
       <div className="quest-type-img">
