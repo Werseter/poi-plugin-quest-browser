@@ -1,0 +1,34 @@
+.QuestView .quest-item-container {
+    height : 640px;
+}
+
+.QuestView .quest-type-button-container {
+    float : left;
+    padding-right: 5%;
+}
+
+.QuestView .quest-nav-button-container {
+    text-align : center;
+    width : 70%;
+    margin : 0 auto;
+    padding-top : 2.5%
+} 
+
+.QuestView .quest-nav-page-button {
+    padding : 0px 5px;
+}
+
+.QuestView .quest-item  {
+    padding : 5px 0px;
+    display : flex;
+    align-items : center;
+    height : 120px;
+}
+
+.QuestView .quest-type-img {
+    padding-right : 5px;
+}
+
+.QuestView .quest-resource-img > img {
+    padding : 5px 5px 0px 15px;
+}

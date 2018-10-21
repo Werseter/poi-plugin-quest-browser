@@ -1,0 +1,56 @@
+{
+  "_from": "poi-plugin-quest-browser",
+  "_id": "poi-plugin-quest-browser@1.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-8x1g4SlklNIPMViPLPFdzZ1YfpU6fValYgRXrNeN+WEekhBWckKfHS8AnrABryw/9LXFS8dD3zy7iPWjQrTbnQ==",
+  "_location": "/poi-plugin-quest-browser",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "poi-plugin-quest-browser",
+    "name": "poi-plugin-quest-browser",
+    "escapedName": "poi-plugin-quest-browser",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/poi-plugin-quest-browser/-/poi-plugin-quest-browser-1.0.0.tgz",
+  "_shasum": "c71ac5f0d1ac29953f26510aabf65e26d5ee2934",
+  "_spec": "poi-plugin-quest-browser",
+  "_where": "C:\\Users\\Wiktor\\AppData\\Roaming\\poi\\plugins",
+  "author": {
+    "name": "Werseter",
+    "email": "werseter@interia.eu",
+    "url": "https://github.com/Werseter/"
+  },
+  "bugs": {
+    "url": "https://github.com/Werseter/poi-plugin-quest-browser/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {},
+  "deprecated": false,
+  "description": "A plugin aiding browsing of quests",
+  "homepage": "https://github.com/Werseter/poi-plugin-quest-browser",
+  "license": "MIT",
+  "main": "index.es",
+  "name": "poi-plugin-quest-browser",
+  "poiPlugin": {
+    "title": "Quest Browser",
+    "description": "A plugin aiding browsing of quests",
+    "icon": "fa/book",
+    "priority": 8,
+    "apiVer": {
+      "7.5.99": "1.0.0"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Werseter/poi-plugin-quest-browser.git"
+  },
+  "version": "1.0.0"
+}
