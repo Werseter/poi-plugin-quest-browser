@@ -5,5 +5,7 @@
   "Weekly": "주간",
   "Monthly": "월간",
   "Once": "한번",
-  "Other": "기타"
+  "Other": "기타",
+  "useTranslationsContents": "If Quest Information plugin is installed, enabled and availible, quest description translations provided by it will be used instead of API provided ones",
+  "useTranslations": "Use Translations"
 }

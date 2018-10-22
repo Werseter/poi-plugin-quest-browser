@@ -5,5 +5,7 @@
   "Weekly": "周刊",
   "Monthly": "月刊",
   "Once": "曾经",
-  "Other": "其他"
+  "Other": "其他",
+  "useTranslationsContents": "If Quest Information plugin is installed, enabled and availible, quest description translations provided by it will be used instead of API provided ones",
+  "useTranslations": "Use Translations"
 }

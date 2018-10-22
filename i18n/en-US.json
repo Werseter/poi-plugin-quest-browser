@@ -5,5 +5,7 @@
   "Weekly": "Weekly",
   "Monthly": "Monthly",
   "Once": "Once",
-  "Other": "Other"
+  "Other": "Other",
+  "useTranslationsContents": "If Quest Information plugin is installed, enabled and availible, quest description translations provided by it will be used instead of API provided ones",
+  "useTranslations": "Use Translations"
 }

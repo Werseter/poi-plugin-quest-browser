@@ -2,8 +2,9 @@ import { connect } from 'react-redux'
 import { classNames } from 'classnames'
 import React, { Component } from 'react'
 import { PropTypes } from 'prop-types'
-import { Panel, Button, ButtonGroup, ButtonToolbar, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Panel, Button, ButtonGroup, ButtonToolbar, OverlayTrigger, Tooltip, Checkbox } from 'react-bootstrap'
 import { get, memoize, times, partial } from 'lodash'
+import { join } from 'path-extra'
 
 import { reducer } from './redux'
 import { questTypeTabNames, navigationArrows, questTypeIcons, apiQuestTypeTabIds } from './constants'
@@ -100,7 +101,7 @@ const QuestPanel = connect(
     questSlots: get(store(state), 'questSlots'),
     translation: questId => get(extensionSelectorFactory('poi-plugin-quest-info')(state), ['quests', questId, 'condition']),
     wikiId: questId => get(extensionSelectorFactory('poi-plugin-quest-info')(state), ['quests', questId, 'wiki_id']),
-    useTranslations: get(null, null, true),
+    useTranslations: window.config.get('plugin.questbrowser.useTranslations') || false,
   })
 )(({activePageTabId, activeTypeTabId, handlePluginSwitch, questCache, questSlots, translation, wikiId, useTranslations}) => 
   <div className="no-scroll quest-item-container">
@@ -124,8 +125,8 @@ const QuestPanel = connect(
 )
 
 @connect((state, props) => ({
-  activeTypeTabId: get(state, 'ui.activeTypeTabId', 0),
-  activePageTabId: get(state, 'ui.activePageTabId', 0),
+  activeTypeTabId: get(state, 'ui.quest-browser-activeTypeTabId', 0),
+  activePageTabId: get(state, 'ui.quest-browser-activePageTabId', 0),
   questInfoSwitch: false && get(state, 'config.plugin.poi-plugin-quest-info.enable', false) &&
                      !get(state, 'config.poi.plugin.windowmode.poi-plugin-quest-info.enable', false),
   maxPages: get(store(state), 'maxPages', {}),
@@ -143,8 +144,8 @@ export class reactClass extends Component {
       dispatch({
         type: '@@TabSwitch',
         tabInfo: {
-          activeTypeTabId: idx,
-          activePageTabId: 0,
+          'quest-browser-activeTypeTabId': idx,
+          'quest-browser-activePageTabId': 0,
         },
       })
     }
@@ -155,7 +156,7 @@ export class reactClass extends Component {
       dispatch({
         type: '@@TabSwitch',
         tabInfo: {
-          activePageTabId: idx,
+          'quest-browser-activePageTabId': idx,
         },
       })
     }
@@ -165,10 +166,10 @@ export class reactClass extends Component {
     dispatch({
       type: '@@TabSwitch',
       tabInfo: {
-        activePageTabId: [0, 
-                          this.props.activePageTabId - 1,
-                          this.props.activePageTabId + 1,
-                          this.props.maxPages[this.props.activeTypeTabId] - 1][idx],
+        'quest-browser-activePageTabId': [0, 
+                                          this.props.activePageTabId - 1,
+                                          this.props.activePageTabId + 1,
+                                          this.props.maxPages[this.props.activeTypeTabId] - 1][idx],
       },
     })
   }
@@ -179,7 +180,7 @@ export class reactClass extends Component {
         dispatch({
           type: '@@TabSwitch',
           tabInfo: {
-            activePageTabId: e.detail.postBody.api_page_no - 1,
+            'quest-browser-activePageTabId': e.detail.postBody.api_page_no - 1,
           },
         })
       }
@@ -187,7 +188,7 @@ export class reactClass extends Component {
         dispatch({
           type: '@@TabSwitch',
           tabInfo: {
-            activeTypeTabId: apiQuestTypeTabIds[e.detail.postBody.api_tab_id],
+            'quest-browser-activeTypeTabId': apiQuestTypeTabIds[e.detail.postBody.api_tab_id],
           },
         })
       }
@@ -226,6 +227,7 @@ export class reactClass extends Component {
         <Panel>
           <Panel.Body>
             <div>
+              <link rel="stylesheet" href={join(__dirname, 'style.css')} />
               <div className="quest-type-button-container">
                 <ButtonGroup vertical>
                   {
@@ -301,6 +303,54 @@ export class reactClass extends Component {
   }
 }
 
+@connect((state, props) => ({
+  useTranslations: window.config.get('plugin.questbrowser.useTranslations') || false,
+  questInfoAvail: get(state, 'config.plugin.poi-plugin-quest-info.enable', false) &&
+                   !get(state, 'config.poi.plugin.windowmode.poi-plugin-quest-info.enable', false),
+}))
+class settingsClass extends Component {
+  static propTypes = {
+    useTranslations: PropTypes.bool.isRequired,
+    questInfoAvail: PropTypes.bool.isRequired,
+  }
+  
+  handleCheckbox = (e) => {
+    window.config.set('plugin.questbrowser.useTranslations', !this.props.useTranslations)
+  }
+  
+  render() {
+    return (
+      <div style={{
+            display: 'grid',
+            gridTemplate: 'auto / 0fr 1fr',
+            marginBottom: '1.8em',
+            alignItems: 'center',
+          }}
+      >
+        <Checkbox
+          onChange={this.handleCheckbox}
+          disabled={!this.props.questInfoAvail}
+          checked={this.props.useTranslations}
+        />
+        <OverlayTrigger
+          overlay={
+            (
+              <Tooltip>
+                {i18next.t('poi-plugin-quest-browser:useTranslationsContents')}
+              </Tooltip>
+            )
+          }
+          placement="bottom"
+        >
+          <div>
+            {i18next.t('poi-plugin-quest-browser:useTranslations')}
+          </div>
+        </OverlayTrigger>
+      </div>
+    )
+  }
+}
+
 const switchPluginPath = [
   {
     path: '/kcsapi/api_get_member/questlist',
@@ -308,4 +358,4 @@ const switchPluginPath = [
   },
 ]
 
-export { switchPluginPath, reducer };
+export { switchPluginPath, reducer, settingsClass };
