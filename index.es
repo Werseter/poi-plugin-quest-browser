@@ -13,7 +13,7 @@ import './style.css'
 import { extensionSelectorFactory } from 'views/utils/selectors'
 import { layoutResizeObserver } from 'views/services/layout'
 
-const { dispatch } = window
+const { dispatch, ipc } = window
 
 import i18next from 'views/env-parts/i18next'
 
@@ -83,10 +83,18 @@ const Quest = (props) => {
           </div>
         </OverlayTrigger>
         <div className="quest-resource-img">
-          <img src="assets/img/material/01.png"/>{props.questData.api_get_material[0]}
-          <img src="assets/img/material/02.png"/>{props.questData.api_get_material[1]}
-          <img src="assets/img/material/03.png"/>{props.questData.api_get_material[2]}
-          <img src="assets/img/material/04.png"/>{props.questData.api_get_material[3]}
+          <div className="quest-resource-img-wrapper">
+            <img src="assets/img/material/01.png"/>{props.questData.api_get_material[0]}
+          </div>
+          <div className="quest-resource-img-wrapper">
+            <img src="assets/img/material/02.png"/>{props.questData.api_get_material[1]}
+          </div>
+          <div className="quest-resource-img-wrapper">
+            <img src="assets/img/material/03.png"/>{props.questData.api_get_material[2]}
+          </div>
+          <div className="quest-resource-img-wrapper">
+            <img src="assets/img/material/04.png"/>{props.questData.api_get_material[3]}
+          </div>
         </div>
       </div>
     </div>
@@ -127,7 +135,7 @@ const QuestPanel = connect(
 @connect((state, props) => ({
   activeTypeTabId: get(state, 'ui.quest-browser-activeTypeTabId', 0),
   activePageTabId: get(state, 'ui.quest-browser-activePageTabId', 0),
-  questInfoSwitch: false && get(state, 'config.plugin.poi-plugin-quest-info.enable', false) &&
+  questInfoSwitch: get(state, 'config.plugin.poi-plugin-quest-info.enable', false) &&
                      !get(state, 'config.poi.plugin.windowmode.poi-plugin-quest-info.enable', false),
   maxPages: get(store(state), 'maxPages', {}),
 }))
@@ -195,15 +203,19 @@ export class reactClass extends Component {
     }
   }
   
-  handlePluginSwitch = (idx) => {
+  handlePluginSwitch = (questId) => {
     if(this.props.questInfoSwitch) {
-      window.dispatchEvent(new CustomEvent('externalQuestChangeRequest', {detail: idx}));
-      dispatch({
-        type: '@@TabSwitch',
-        tabInfo: {
-          activeMainTab: 'poi-plugin-quest-info',
-        },
-      });
+      try {
+        ipc.access('quest-info').switchTo(questId);
+        dispatch({
+          type: '@@TabSwitch',
+          tabInfo: {
+            activeMainTab: 'poi-plugin-quest-info',
+          },
+        })
+      } catch(err) {
+        log.error("poi-plugin-quest-browser: handlePluginSwitch failed\n" + err);
+      }
     }
   }
 

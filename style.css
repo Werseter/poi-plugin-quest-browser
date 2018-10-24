@@ -1,10 +1,10 @@
 .QuestView .quest-item-container {
-    height : 640px;
+    height : 690px;
 }
 
 .QuestView .quest-type-button-container {
     float : left;
-    padding-right: 5%;
+    padding-right : 5%;
 }
 
 .QuestView .quest-nav-button-container {
@@ -18,29 +18,43 @@
 
 .QuestView .quest-item  {
     display : flex;
-    padding : 5px 0px;
-    height : 120px;
-    padding-right: 10px;
+    height : 130px;
+    padding-left : 10px;
+    background-color : #ffffff08;
+    margin-bottom : 10px;
+}
+
+.QuestView .quest-item:hover  {
+    background-color : #ffffff10;
 }
 
 .QuestView .quest-contents {
-    max-height : 88px;
-    padding-right: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    height : 88px;
+    padding-right : 10px;
+    overflow : hidden;
+    text-overflow : ellipsis;
 }
 
 .QuestView .quest-type-img {
     padding-right : 5px;
+    align-self : center;
 }
 
 .QuestView .quest-resource-img {
     display : flex;
     height : 32px;
-    margin-bottom : 0;
+    margin-bottom : 0px;
     margin-top : auto;
+    white-space : nowrap;
+    width : 100%;
+    display : table;
 }
 
-.QuestView .quest-resource-img > img {
-    padding : 0px 5px 0px 15px;
+.QuestView .quest-resource-img-wrapper {
+    vertical-align : middle;
+    display : table-cell;
+}
+
+.QuestView .quest-resource-wrapper-img > img {
+    padding-right : 5px;
 }
