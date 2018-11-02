@@ -16,6 +16,10 @@
     padding : 0px 5px;
 }
 
+.QuestView .quest-box {
+    width : 100%;
+}
+
 .QuestView .quest-item  {
     display : flex;
     height : 130px;
@@ -41,12 +45,9 @@
 }
 
 .QuestView .quest-resource-img {
-    display : flex;
     height : 32px;
     margin-bottom : 0px;
     margin-top : auto;
-    white-space : nowrap;
-    width : 100%;
     display : table;
 }
 
@@ -55,6 +56,6 @@
     display : table-cell;
 }
 
-.QuestView .quest-resource-wrapper-img > img {
+.QuestView .quest-resource-img-wrapper > img {
     padding-right : 5px;
 }

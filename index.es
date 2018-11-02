@@ -8,7 +8,6 @@ import { join } from 'path-extra'
 
 import { reducer } from './redux'
 import { questTypeTabNames, navigationArrows, questTypeIcons, apiQuestTypeTabIds } from './constants'
-import './style.css'
 
 import { extensionSelectorFactory } from 'views/utils/selectors'
 import { layoutResizeObserver } from 'views/services/layout'
@@ -71,7 +70,7 @@ const Quest = (props) => {
       <div className="quest-type-img">
         <img src={questTypeIcons[props.questData.api_category - 1]}/>
       </div>
-      <div>
+      <div className="quest-box">
         <OverlayTrigger
             placement='bottom'
             overlay={
