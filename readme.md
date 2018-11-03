@@ -6,6 +6,14 @@ Quest Browser is a [poi](https://github.com/poooi/poi) plugin aiding browsing of
 
 [![npm version](https://badge.fury.io/js/poi-plugin-quest-browser.svg)](https://badge.fury.io/js/poi-plugin-quest-browser)
 
+### 1.0.7
+
+- Quality of life update, added scrollable list, adapted for horizontal layout
+
+### 1.0.6
+
+- Minor fix
+
 ### 1.0.5
 
 - CSS updates, introducing Quest Information plugin link, as per new API, allows for viewing extended info on clicking the quest through Quest Information plugin - make sure to update Quest Information to at least v. 5.4.0 to make use of it

@@ -1,5 +1,35 @@
+.QuestView, .QuestView .panel, .QuestView .panel-body {
+    height : inherit;
+}
+
+.QuestView .panel-body {
+    margin-bottom : 0px;
+}
+
+.QuestView .panel-body {
+    padding : 0px;
+}
+
+.QuestView .quest-panel {
+    padding : 15px;
+    min-height: 306px;
+    max-height: 780px;
+    height: inherit;
+    display : flex;
+    flex-flow : column;
+}
+
+.QuestView .quest-top-container {
+    max-height : 720px;
+    height : inherit;
+    display : flex;
+}
+
 .QuestView .quest-item-container {
-    height : 690px;
+    overflow : scroll;
+    display : flex;
+    flex-flow : column;
+    flex-grow : 1;
 }
 
 .QuestView .quest-type-button-container {
@@ -9,7 +39,8 @@
 
 .QuestView .quest-nav-button-container {
     text-align : center;
-    padding-top : 2.5%
+    padding-top : 2.5%;
+    white-space : nowrap;
 } 
 
 .QuestView .quest-nav-page-button {
@@ -26,6 +57,7 @@
     padding-left : 10px;
     background-color : #ffffff08;
     margin-bottom : 10px;
+    flex-shrink : 0;
 }
 
 .QuestView .quest-item:hover  {

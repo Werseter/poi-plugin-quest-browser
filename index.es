@@ -111,24 +111,22 @@ const QuestPanel = connect(
     useTranslations: window.config.get('plugin.questbrowser.useTranslations') || false,
   })
 )(({activePageTabId, activeTypeTabId, handlePluginSwitch, questCache, questSlots, translation, wikiId, useTranslations}) => 
-  <div className="no-scroll quest-item-container">
-    <div>
-      {
-        times(5).map(i => {
-          const quest = get(questCache, get(questSlots, [activeTypeTabId, activePageTabId, i]));
-          const questId = get(quest, 'api_no');
-          return <Quest
-                   key={i}
-                   questData={quest}
-                   translation={translation(questId)}
-                   wikiId={wikiId(questId)}
-                   useTranslations={useTranslations}
-                   onClick={partial(handlePluginSwitch, questId)}
-                 />
-        })
-      }
-    </div>
-  </div>
+  <>
+    {
+      times(5).map(i => {
+        const quest = get(questCache, get(questSlots, [activeTypeTabId, activePageTabId, i]));
+        const questId = get(quest, 'api_no');
+        return <Quest
+                 key={i}
+                 questData={quest}
+                 translation={translation(questId)}
+                 wikiId={wikiId(questId)}
+                 useTranslations={useTranslations}
+                 onClick={partial(handlePluginSwitch, questId)}
+               />
+      })
+    }
+  </>
 )
 
 @connect((state, props) => ({
@@ -234,82 +232,86 @@ export class reactClass extends Component {
     const currMaxPages = this.props.maxPages[activeTypeTabId] || 0;
     const off = Math.min(Math.max(currMaxPages - 5, 0), Math.max(activePageTabId - 2, 0));
     return (
-      <div className = "QuestView">
-        <Panel>
-          <Panel.Body>
-            <div>
-              <link rel="stylesheet" href={join(__dirname, 'style.css')} />
-              <div className="quest-type-button-container">
-                <ButtonGroup vertical>
-                  {
-                    times(7).map(i =>
-                      <QuestTypeSwitchButton
-                        key={i}
-                        questTypeTabId={i}
-                        onClick={e => this.handleTypeTabClick(i)}
-                        activeTypeTabId={activeTypeTabId}
+      <>
+      <link rel="stylesheet" href={join(__dirname, 'style.css')} />
+        <div className = "QuestView">
+          <Panel>
+            <Panel.Body>
+              <div className="no-scroll quest-panel">
+                <div className="quest-top-container">
+                  <div className="quest-type-button-container">
+                    <ButtonGroup vertical>
+                      {
+                        times(7).map(i =>
+                          <QuestTypeSwitchButton
+                            key={i}
+                            questTypeTabId={i}
+                            onClick={e => this.handleTypeTabClick(i)}
+                            activeTypeTabId={activeTypeTabId}
+                          />
+                        )
+                      }
+                    </ButtonGroup>
+                  </div>
+                  <div className="quest-item-container" ref={ref => { this.panel = ref }}>
+                    <QuestPanel
+                      activeTypeTabId={activeTypeTabId}
+                      activePageTabId={activePageTabId}
+                      handlePluginSwitch={this.handlePluginSwitch}
+                    />
+                  </div>
+                </div>
+                <div className="quest-nav-button-container">
+                    <ButtonGroup>
+                      <NavigationButton
+                        key={0}
+                        navId={0}
+                        onClick={e => this.handleNavigationClick(0)}
+                        activePageTabId={activePageTabId}
+                        disabled={activePageTabId == 0 || currMaxPages == 0}
                       />
-                    )
-                  }
-                </ButtonGroup>
+                      <NavigationButton
+                        key={1}
+                        navId={1}
+                        onClick={e => this.handleNavigationClick(1)}
+                        activePageTabId={activePageTabId}
+                        disabled={activePageTabId == 0 || currMaxPages == 0}
+                      />
+                    </ButtonGroup>
+                    <ButtonGroup className="quest-nav-page-button">
+                      { 
+                        times(5).map(i =>
+                          <QuestPageSwitchButton
+                            questPageTabId={i+off}
+                            onClick={e => this.handlePageTabClick(i+off, currMaxPages)}
+                            activePageTabId={activePageTabId}
+                            currMaxPages={currMaxPages}
+                          />
+                        )
+                      }
+                    </ButtonGroup>
+                    <ButtonGroup>
+                      <NavigationButton
+                        key={2}
+                        navId={2}
+                        onClick={e => this.handleNavigationClick(2)}
+                        activePageTabId={activePageTabId}
+                        disabled={activePageTabId == currMaxPages - 1 || currMaxPages == 0}
+                      />
+                      <NavigationButton
+                        key={3}
+                        navId={3}
+                        onClick={e => this.handleNavigationClick(3)}
+                        activePageTabId={activePageTabId}
+                        disabled={activePageTabId == currMaxPages - 1 || currMaxPages == 0}
+                      />
+                    </ButtonGroup>
+                </div>
               </div>
-              <div ref={ref => { this.panel = ref }}>
-                <QuestPanel
-                  activeTypeTabId={activeTypeTabId}
-                  activePageTabId={activePageTabId}
-                  handlePluginSwitch={this.handlePluginSwitch}
-                />
-              </div>
-              <div className="quest-nav-button-container">
-                  <ButtonGroup>
-                    <NavigationButton
-                      key={0}
-                      navId={0}
-                      onClick={e => this.handleNavigationClick(0)}
-                      activePageTabId={activePageTabId}
-                      disabled={activePageTabId == 0 || currMaxPages == 0}
-                    />
-                    <NavigationButton
-                      key={1}
-                      navId={1}
-                      onClick={e => this.handleNavigationClick(1)}
-                      activePageTabId={activePageTabId}
-                      disabled={activePageTabId == 0 || currMaxPages == 0}
-                    />
-                  </ButtonGroup>
-                  <ButtonGroup className="quest-nav-page-button">
-                    { 
-                      times(5).map(i =>
-                        <QuestPageSwitchButton
-                          questPageTabId={i+off}
-                          onClick={e => this.handlePageTabClick(i+off, currMaxPages)}
-                          activePageTabId={activePageTabId}
-                          currMaxPages={currMaxPages}
-                        />
-                      )
-                    }
-                  </ButtonGroup>
-                  <ButtonGroup>
-                    <NavigationButton
-                      key={2}
-                      navId={2}
-                      onClick={e => this.handleNavigationClick(2)}
-                      activePageTabId={activePageTabId}
-                      disabled={activePageTabId == currMaxPages - 1 || currMaxPages == 0}
-                    />
-                    <NavigationButton
-                      key={3}
-                      navId={3}
-                      onClick={e => this.handleNavigationClick(3)}
-                      activePageTabId={activePageTabId}
-                      disabled={activePageTabId == currMaxPages - 1 || currMaxPages == 0}
-                    />
-                  </ButtonGroup>
-              </div>
-            </div>
-          </Panel.Body>
-        </Panel>
-      </div>
+            </Panel.Body>
+          </Panel>
+        </div>
+      </>
     )
   }
 }
