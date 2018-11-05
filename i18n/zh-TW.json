@@ -6,6 +6,14 @@
   "Monthly": "月刊",
   "Once": "曾经",
   "Other": "其他",
-  "useTranslationsContents": "If Quest Information plugin is installed, enabled and availible, quest description translations provided by it will be used instead of API provided ones",
-  "useTranslations": "Use Translations"
+  "useTranslations": "Use Translations",
+  "native": "Native",
+  "none": "None",
+  "KC3-header": "KC3Kai Translations",
+  "KC3-en-US": "English",
+  "KC3-ja-JP": "Japanese",
+  "KC3-ko-KR": "Korean",
+  "KC3-zh-TW": "Chinese Traditional",
+  "KC3-zh-CN": "Chinese Simplified",
+  "questInfoTrans": "Quest Information Plugin provided"
 }

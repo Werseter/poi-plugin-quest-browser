@@ -2,12 +2,13 @@ import { connect } from 'react-redux'
 import { classNames } from 'classnames'
 import React, { Component } from 'react'
 import { PropTypes } from 'prop-types'
-import { Panel, Button, ButtonGroup, ButtonToolbar, OverlayTrigger, Tooltip, Checkbox } from 'react-bootstrap'
+import { Panel, Button, ButtonGroup, ButtonToolbar, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { get, memoize, times, partial } from 'lodash'
 import { join } from 'path-extra'
 
-import { reducer } from './redux'
+import { reducer, loadTranslations } from './redux'
 import { questTypeTabNames, navigationArrows, questTypeIcons, apiQuestTypeTabIds } from './constants'
+import { settingsClass } from './settings'
 
 import { extensionSelectorFactory } from 'views/utils/selectors'
 import { layoutResizeObserver } from 'views/services/layout'
@@ -17,6 +18,18 @@ const { dispatch, ipc } = window
 import i18next from 'views/env-parts/i18next'
 
 const store = extensionSelectorFactory('poi-plugin-quest-browser');
+
+const TranslationBundler = (questId, state, props) => {
+  if(!questId)
+    return null;
+  const { lngWikiId, lngQuestTitles, lngQuestDescriptions } = props;
+  const translationBank = get(store(state), 'translationBank');
+  return ({
+    wiki_id : get(translationBank[lngWikiId][questId], 'wiki_id'),
+    api_title : get(translationBank[lngQuestTitles][questId], 'api_title'),
+    api_detail : get(translationBank[lngQuestDescriptions][questId], 'api_detail'),
+  })
+}
 
 const NavigationButton = connect(
   (state, {activePageTabId}) => memoize((state) => activePageTabId)
@@ -61,8 +74,9 @@ const Quest = (props) => {
   
   const contents = (
     <span>
-     {(props.wikiId ? `${props.wikiId} - ` : '') + props.questData.api_title}<br/>
-     {props.useTranslations && props.translation ? props.translation : props.questData.api_detail.replace(/<br\s*\/?>/gi, '')}
+     {props.useTranslations && props.translation ? `${props.translation.wiki_id} - ` : ''}
+     {props.useTranslations && props.translation ? props.translation.api_title : props.questData.api_title}<br/>
+     {props.useTranslations && props.translation ? props.translation.api_detail : props.questData.api_detail.replace(/<br\s*\/?>/gi, '')}
     </span>
   )
   return (
@@ -100,17 +114,17 @@ const Quest = (props) => {
   )
 }
 const QuestPanel = connect(
-  (state, {activePageTabId, activeTypeTabId, handlePluginSwitch}) => ({
+  (state, {activePageTabId, activeTypeTabId, handlePluginSwitch,
+           lngWikiId, lngQuestTitles, lngQuestDescriptions }) => ({
     activePageTabId,
     activeTypeTabId,
     handlePluginSwitch,
     questCache: get(store(state), 'questCache'),
     questSlots: get(store(state), 'questSlots'),
-    translation: questId => get(extensionSelectorFactory('poi-plugin-quest-info')(state), ['quests', questId, 'condition']),
-    wikiId: questId => get(extensionSelectorFactory('poi-plugin-quest-info')(state), ['quests', questId, 'wiki_id']),
+    translation: questId => TranslationBundler(questId, state, { lngWikiId, lngQuestTitles, lngQuestDescriptions }),
     useTranslations: window.config.get('plugin.questbrowser.useTranslations') || false,
   })
-)(({activePageTabId, activeTypeTabId, handlePluginSwitch, questCache, questSlots, translation, wikiId, useTranslations}) => 
+)(({activePageTabId, activeTypeTabId, handlePluginSwitch, questCache, questSlots, translation, useTranslations}) => 
   <>
     {
       times(5).map(i => {
@@ -120,7 +134,6 @@ const QuestPanel = connect(
                  key={i}
                  questData={quest}
                  translation={translation(questId)}
-                 wikiId={wikiId(questId)}
                  useTranslations={useTranslations}
                  onClick={partial(handlePluginSwitch, questId)}
                />
@@ -135,6 +148,9 @@ const QuestPanel = connect(
   questInfoSwitch: get(state, 'config.plugin.poi-plugin-quest-info.enable', false) &&
                      !get(state, 'config.poi.plugin.windowmode.poi-plugin-quest-info.enable', false),
   maxPages: get(store(state), 'maxPages', {}),
+  lngWikiId: window.config.get('plugin.questbrowser.lngWikiId') || 'native',
+  lngQuestTitles: window.config.get('plugin.questbrowser.lngQuestTitles') || 'native',
+  lngQuestDescriptions: window.config.get('plugin.questbrowser.lngQuestDescriptions') || 'native',
 }))
 export class reactClass extends Component {
   static propTypes = {
@@ -224,6 +240,7 @@ export class reactClass extends Component {
   componentDidMount() {
     layoutResizeObserver.observe(this.panel);
     window.addEventListener('game.response', this.handleResponse);
+    loadTranslations();
   }
 
   render() {
@@ -258,6 +275,9 @@ export class reactClass extends Component {
                       activeTypeTabId={activeTypeTabId}
                       activePageTabId={activePageTabId}
                       handlePluginSwitch={this.handlePluginSwitch}
+                      lngWikiId={this.props.lngWikiId}
+                      lngQuestTitles={this.props.lngQuestTitles}
+                      lngQuestDescriptions={this.props.lngQuestDescriptions}
                     />
                   </div>
                 </div>
@@ -312,54 +332,6 @@ export class reactClass extends Component {
           </Panel>
         </div>
       </>
-    )
-  }
-}
-
-@connect((state, props) => ({
-  useTranslations: window.config.get('plugin.questbrowser.useTranslations') || false,
-  questInfoAvail: get(state, 'config.plugin.poi-plugin-quest-info.enable', false) &&
-                   !get(state, 'config.poi.plugin.windowmode.poi-plugin-quest-info.enable', false),
-}))
-class settingsClass extends Component {
-  static propTypes = {
-    useTranslations: PropTypes.bool.isRequired,
-    questInfoAvail: PropTypes.bool.isRequired,
-  }
-  
-  handleCheckbox = (e) => {
-    window.config.set('plugin.questbrowser.useTranslations', !this.props.useTranslations)
-  }
-  
-  render() {
-    return (
-      <div style={{
-            display: 'grid',
-            gridTemplate: 'auto / 0fr 1fr',
-            marginBottom: '1.8em',
-            alignItems: 'center',
-          }}
-      >
-        <Checkbox
-          onChange={this.handleCheckbox}
-          disabled={!this.props.questInfoAvail}
-          checked={this.props.useTranslations}
-        />
-        <OverlayTrigger
-          overlay={
-            (
-              <Tooltip>
-                {i18next.t('poi-plugin-quest-browser:useTranslationsContents')}
-              </Tooltip>
-            )
-          }
-          placement="bottom"
-        >
-          <div>
-            {i18next.t('poi-plugin-quest-browser:useTranslations')}
-          </div>
-        </OverlayTrigger>
-      </div>
     )
   }
 }
