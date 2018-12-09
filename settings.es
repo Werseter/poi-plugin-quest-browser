@@ -121,7 +121,7 @@ export class settingsClass extends Component {
           {i18next.t('poi-plugin-quest-browser:useTranslations')}
         </Checkbox>
         <div style={this.props.useTranslations ? null : {display: 'none'}}>
-          <p>Translation Sources</p>
+          <p style = {true ? null : null}>Translation Sources</p>
           <SplitButton
             bsStyle='default'
             title='Wiki ID'

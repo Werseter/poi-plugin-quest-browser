@@ -2,17 +2,23 @@ import { connect } from 'react-redux'
 import { classNames } from 'classnames'
 import React, { Component } from 'react'
 import { PropTypes } from 'prop-types'
-import { Panel, Button, ButtonGroup, ButtonToolbar, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Panel, Button, ButtonGroup, ButtonToolbar,
+         OverlayTrigger, Tooltip, Label } from 'react-bootstrap'
 import { get, memoize, times, partial } from 'lodash'
 import { join } from 'path-extra'
 
 import { reducer, loadTranslations } from './redux'
-import { questTypeTabNames, navigationArrows, questTypeIcons, apiQuestTypeTabIds } from './constants'
+import { questTypeTabNames, navigationArrows,
+         questTypeIcons, apiQuestTypeTabIds } from './constants'
 import { settingsClass } from './settings'
 
 import { extensionSelectorFactory } from 'views/utils/selectors'
 import { layoutResizeObserver } from 'views/services/layout'
 
+import { sumSubgoals, getStyleByProgress, getStyleByPercent,
+         progressLabelText, getToolTip, getStyleByCompletion,
+         completionLabelText } from './task-progress-wrapper'
+ 
 const { dispatch, ipc } = window
 
 import i18next from 'views/env-parts/i18next'
@@ -71,7 +77,15 @@ const QuestPageSwitchButton = connect(
 const Quest = (props) => {
   if(!props.questData)
     return null;
-  
+  const [count, required] = sumSubgoals(props.questRecord);
+  const progressStyle = props.questRecord ? getStyleByPercent(count / required) :
+                                              getStyleByProgress(props.questData)
+  const progressLabel = props.questRecord ? `${count} / ${required}` :
+                                            progressLabelText(props.questData)
+  const progressOverlay = props.questRecord ? <div>{getToolTip(props.questRecord || {})}</div> :
+                                              undefined
+  const completionStyle = getStyleByCompletion(props.questData)
+  const completionLabel = completionLabelText(props.questData)
   const contents = (
     <span>
      {props.useTranslations && props.translation && props.translation.wiki_id ? `${props.translation.wiki_id} - ` : ''}
@@ -81,8 +95,21 @@ const Quest = (props) => {
   )
   return (
     <div className="quest-item" onClick={props.onClick}>
-      <div className="quest-type-img">
+      <div className="quest-type-info">
+        <div>
+          <Label bsStyle={completionStyle}>{completionLabel}</Label>
+        </div>
         <img src={questTypeIcons[props.questData.api_category - 1]}/>
+        <div>
+          <OverlayTrigger
+            placement='top'
+            overlay={
+              <Tooltip id={`task-progress-${props.questData.api_no}`} style={progressOverlay ? null : {display: 'none'}}>{progressOverlay}</Tooltip>
+            }
+          >
+            <Label bsStyle={progressStyle}>{progressLabel}</Label>
+          </OverlayTrigger>
+        </div>
       </div>
       <div className="quest-box">
         <OverlayTrigger
@@ -121,18 +148,21 @@ const QuestPanel = connect(
     handlePluginSwitch,
     questCache: get(store(state), 'questCache'),
     questSlots: get(store(state), 'questSlots'),
+    questRecords: get(state, ['info', 'quests', 'records']),
     translation: questId => TranslationBundler(questId, state, { lngWikiId, lngQuestTitles, lngQuestDescriptions }),
     useTranslations: window.config.get('plugin.questbrowser.useTranslations') || false,
   })
-)(({activePageTabId, activeTypeTabId, handlePluginSwitch, questCache, questSlots, translation, useTranslations}) => 
+)(({activePageTabId, activeTypeTabId, handlePluginSwitch, questCache, questSlots, questRecords, translation, useTranslations}) => 
   <>
     {
       times(5).map(i => {
         const quest = get(questCache, get(questSlots, [activeTypeTabId, activePageTabId, i]));
         const questId = get(quest, 'api_no');
+        const questRecord = get(questRecords, questId);
         return <Quest
                  key={i}
                  questData={quest}
+                 questRecord={questRecord}
                  translation={translation(questId)}
                  useTranslations={useTranslations}
                  onClick={partial(handlePluginSwitch, questId)}
