@@ -74,9 +74,9 @@ const Quest = (props) => {
   
   const contents = (
     <span>
-     {props.useTranslations && props.translation ? `${props.translation.wiki_id} - ` : ''}
-     {props.useTranslations && props.translation ? props.translation.api_title : props.questData.api_title}<br/>
-     {props.useTranslations && props.translation ? props.translation.api_detail : props.questData.api_detail.replace(/<br\s*\/?>/gi, '')}
+     {props.useTranslations && props.translation && props.translation.wiki_id ? `${props.translation.wiki_id} - ` : ''}
+     {props.useTranslations && props.translation && props.translation.api_title ? props.translation.api_title : props.questData.api_title}<br/>
+     {props.useTranslations && props.translation && props.translation.api_detail ? props.translation.api_detail : props.questData.api_detail.replace(/<br\s*\/?>/gi, '')}
     </span>
   )
   return (

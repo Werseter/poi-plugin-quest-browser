@@ -1,28 +1,4 @@
 {
-  "_from": "poi-plugin-quest-browser",
-  "_id": "poi-plugin-quest-browser@1.0.7",
-  "_inBundle": false,
-  "_integrity": "sha512-gkmAU8UiYZVOz/qYo11a6yjPk+4QBbuTa1+QtYfpSSe/EvhMnmUILJfV418/sjphGZkG+g2I42fc1ewF1kRe2Q==",
-  "_location": "/poi-plugin-quest-browser",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "tag",
-    "registry": true,
-    "raw": "poi-plugin-quest-browser",
-    "name": "poi-plugin-quest-browser",
-    "escapedName": "poi-plugin-quest-browser",
-    "rawSpec": "",
-    "saveSpec": null,
-    "fetchSpec": "latest"
-  },
-  "_requiredBy": [
-    "#USER",
-    "/"
-  ],
-  "_resolved": "https://registry.npmjs.org/poi-plugin-quest-browser/-/poi-plugin-quest-browser-1.0.7.tgz",
-  "_shasum": "f4ca60b335ad2a72ec509f5bf61caa43e22f9e7f",
-  "_spec": "poi-plugin-quest-browser",
-  "_where": "C:\\Users\\Wiktor\\AppData\\Roaming\\poi\\plugins",
   "author": {
     "name": "Werseter",
     "email": "werseter@interia.eu",
@@ -45,12 +21,12 @@
     "icon": "fa/book",
     "priority": 8,
     "apiVer": {
-      "7.5.99": "1.1"
+      "7.5.99": "1.1.1"
     }
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Werseter/poi-plugin-quest-browser.git"
   },
-  "version": "1.1"
+  "version": "1.1.1"
 }
