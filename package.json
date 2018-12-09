@@ -21,12 +21,12 @@
     "icon": "fa/book",
     "priority": 8,
     "apiVer": {
-      "7.5.99": "1.2.1"
+      "7.5.99": "1.2.2"
     }
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Werseter/poi-plugin-quest-browser.git"
   },
-  "version": "1.2.1"
+  "version": "1.2.2"
 }

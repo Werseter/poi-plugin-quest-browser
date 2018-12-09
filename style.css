@@ -81,12 +81,7 @@
 
 .QuestView .quest-type-info div {
     margin : 5px 0px;
-    background-color : transparent;
     height : 16px;
-}
-
-.QuestView .quest-type-info .label {
-    background-color : transparent;
 }
 
 .QuestView .quest-resource-img {
