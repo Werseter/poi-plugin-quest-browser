@@ -79,7 +79,7 @@ const SettingsQuestDescLngMenu = connect(
 
 @connect((state, props) => ({
   useTranslations: window.config.get('plugin.questbrowser.useTranslations') || false,
-  questInfoAvail: get(state, 'config.plugin.poi-plugin-quest-info.enable', false) &&
+  questInfoAvail: (get(state, 'config.plugin.poi-plugin-quest-info.enable', false) || find(state.plugins, {'id': 'poi-plugin-quest-info'}).enabled) &&
                    !get(state, 'config.poi.plugin.windowmode.poi-plugin-quest-info.enable', false),
   lngWikiId: window.config.get('plugin.questbrowser.lngWikiId') || 'native',
   lngQuestTitles: window.config.get('plugin.questbrowser.lngQuestTitles') || 'native',

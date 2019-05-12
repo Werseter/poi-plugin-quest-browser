@@ -6,9 +6,26 @@ Quest Browser is a [poi](https://github.com/poooi/poi) plugin aiding browsing of
 
 [![npm version](https://badge.fury.io/js/poi-plugin-quest-browser.svg)](https://badge.fury.io/js/poi-plugin-quest-browser)
 
+### 1.3.1
+
+- Updated KC3Kai translation addins
+- Improved detection check for Quest Information plugin link status
+
+### 1.3.0
+
+- Sync Poi internal active quest tracker with In Progress view
+
+### 1.2.4
+
+- Another Poi 10.x fix
+
+### 1.2.3
+
+- Poi 10.x compatibility fix
+
 ### 1.2.2
 
-- Removed background override for new labels
+- Minor fix
 
 ### 1.2.1
 
