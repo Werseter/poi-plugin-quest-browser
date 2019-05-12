@@ -4,7 +4,8 @@ import { join } from 'path-extra'
 import { mapValues } from 'lodash'
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
+function _splice(array, chunk_size) { return Object.assign({}, Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => Object.assign(Object.assign({}, Array(chunk_size).fill(null)), array.slice(begin, begin + chunk_size)))); }
+        
 const initState = {
   questCache: {},
   questSlots: [{},{},{},{},{},{},{}],
@@ -68,6 +69,13 @@ function patchNativeTranslation(quest) {
     };
 }
 
+function dispatchFetchActiveCache() {
+  dispatch({
+    type: '@@poi-plugin-quest-browser@fetchActiveCache',
+    body: window.getStore('info.quests.activeQuests')
+  });
+}
+
 function reducer(state = initState, action) {
   const {
     type,
@@ -84,6 +92,17 @@ function reducer(state = initState, action) {
         return _extends({}, state, { translationBank });
       }
     
+    case '@@poi-plugin-quest-browser@fetchActiveCache':
+      {
+        let { questCache, translationBank, questSlots, maxPages } = state;
+        let questActiveCache = body;
+        let extractedQuests = Object.keys(questActiveCache).reduce((sum, curr) => Object.assign(sum, {[curr]: questActiveCache[curr].detail}), {});
+        questCache = _extends({}, questCache, extractedQuests);
+        questSlots[1] = _splice(Object.keys(extractedQuests), 5);
+        maxPages[1] = Object.keys(questSlots[1]).length;
+        Object.values(extractedQuests).forEach(quest => {translationBank.native[quest.api_no] = patchNativeTranslation(quest)});
+        return _extends({}, state, { questCache, translationBank, questSlots, maxPages });
+      }
     case '@@Response/kcsapi/api_get_member/questlist':
       {
         let { questCache, translationBank, questSlots, maxPages } = state;
@@ -115,4 +134,4 @@ function reducer(state = initState, action) {
   return state;
 }
 
-export { reducer, loadTranslations };
+export { reducer, loadTranslations, dispatchFetchActiveCache };

@@ -4,16 +4,15 @@ import React, { Component } from 'react'
 import { PropTypes } from 'prop-types'
 import { Panel, Button, ButtonGroup, ButtonToolbar,
          OverlayTrigger, Tooltip, Label } from 'react-bootstrap'
-import { get, memoize, times, partial } from 'lodash'
+import { get, memoize, times, partial, find } from 'lodash'
 import { join } from 'path-extra'
 
-import { reducer, loadTranslations } from './redux'
+import { reducer, loadTranslations, dispatchFetchActiveCache } from './redux'
 import { questTypeTabNames, navigationArrows,
          questTypeIcons, apiQuestTypeTabIds } from './constants'
 import { settingsClass } from './settings'
 
 import { extensionSelectorFactory } from 'views/utils/selectors'
-import { layoutResizeObserver } from 'views/services/layout'
 
 import { sumSubgoals, getStyleByProgress, getStyleByPercent,
          progressLabelText, getToolTip, getStyleByCompletion,
@@ -175,7 +174,7 @@ const QuestPanel = connect(
 @connect((state, props) => ({
   activeTypeTabId: get(state, 'ui.quest-browser-activeTypeTabId', 0),
   activePageTabId: get(state, 'ui.quest-browser-activePageTabId', 0),
-  questInfoSwitch: get(state, 'config.plugin.poi-plugin-quest-info.enable', false) &&
+  questInfoSwitch: find(state.plugins, {'id': 'poi-plugin-quest-info'}).enabled &&
                      !get(state, 'config.poi.plugin.windowmode.poi-plugin-quest-info.enable', false),
   maxPages: get(store(state), 'maxPages', {}),
   lngWikiId: window.config.get('plugin.questbrowser.lngWikiId') || 'native',
@@ -243,7 +242,11 @@ export class reactClass extends Component {
           },
         })
       }
+      if (e.detail.postBody.api_tab_id == 9) {
+        return;
+      }
     }
+    dispatchFetchActiveCache();
   }
   
   handlePluginSwitch = (questId) => {
@@ -263,14 +266,13 @@ export class reactClass extends Component {
   }
 
   componentWillUnmount() {
-    layoutResizeObserver.unobserve(this.panel);
     window.removeEventListener('game.response', this.handleResponse);
   }
 
-  componentDidMount() {
-    layoutResizeObserver.observe(this.panel);
+  async componentDidMount() {
     window.addEventListener('game.response', this.handleResponse);
-    loadTranslations();
+    await loadTranslations();
+    dispatchFetchActiveCache();
   }
 
   render() {
@@ -300,7 +302,7 @@ export class reactClass extends Component {
                       }
                     </ButtonGroup>
                   </div>
-                  <div className="quest-item-container" ref={ref => { this.panel = ref }}>
+                  <div className="quest-item-container">
                     <QuestPanel
                       activeTypeTabId={activeTypeTabId}
                       activePageTabId={activePageTabId}
