@@ -106,24 +106,17 @@ function reducer(state = initState, action) {
     case '@@Response/kcsapi/api_get_member/questlist':
       {
         let { questCache, translationBank, questSlots, maxPages } = state;
-        maxPages[apiQuestTypeTabIds[postBody.api_tab_id]] = body.api_page_count;
-        if(body.api_list != null) {
-          for (var i = 0; i < 5; ++i) {
-            const quest = body.api_list[i];
-            if (quest && typeof quest === 'object') {
-              questCache[quest.api_no] = quest;
-              translationBank.native[quest.api_no] = patchNativeTranslation(quest);
-              if (questSlots[apiQuestTypeTabIds[postBody.api_tab_id]] == null) questSlots[apiQuestTypeTabIds[postBody.api_tab_id]] = {};
-              if (questSlots[apiQuestTypeTabIds[postBody.api_tab_id]][postBody.api_page_no - 1] == null) questSlots[apiQuestTypeTabIds[postBody.api_tab_id]][postBody.api_page_no - 1] = {};
-              questSlots[apiQuestTypeTabIds[postBody.api_tab_id]][postBody.api_page_no - 1][i] = quest.api_no;
-            }
-            else {
-              questSlots[apiQuestTypeTabIds[postBody.api_tab_id]][postBody.api_page_no - 1][i] = null;
-            }
-          }
-        }
-        else {
-          questSlots[apiQuestTypeTabIds[postBody.api_tab_id]] = {};
+        maxPages[apiQuestTypeTabIds[postBody.api_tab_id]] = Math.ceil(body.api_count / 5);
+        questSlots[apiQuestTypeTabIds[postBody.api_tab_id]] = {};
+        for (var i = 0; i < body.api_count; ++i) {
+          const quest = body.api_list[i];
+          let page_no = Math.floor(i / 5);
+          let slot_no = i % 5;
+          questCache[quest.api_no] = quest;
+          translationBank.native[quest.api_no] = patchNativeTranslation(quest);
+          if (questSlots[apiQuestTypeTabIds[postBody.api_tab_id]] == null) questSlots[apiQuestTypeTabIds[postBody.api_tab_id]] = {};
+          if (questSlots[apiQuestTypeTabIds[postBody.api_tab_id]][page_no] == null) questSlots[apiQuestTypeTabIds[postBody.api_tab_id]][page_no] = {};
+          questSlots[apiQuestTypeTabIds[postBody.api_tab_id]][page_no][slot_no] = quest.api_no;
         }
         return _extends({}, state, {questCache, questSlots, translationBank, maxPages});
       }

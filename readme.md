@@ -6,6 +6,12 @@ Quest Browser is a [poi](https://github.com/poooi/poi) plugin aiding browsing of
 
 [![npm version](https://badge.fury.io/js/poi-plugin-quest-browser.svg)](https://badge.fury.io/js/poi-plugin-quest-browser)
 
+### 1.4.0
+
+- Added partial compatibility with newer KC versions
+- Fixed Quest Browser plugin integration capability check at startup
+- Removed height limiter in Quest panel to work correctly on higher resolution screens
+
 ### 1.3.1
 
 - Updated KC3Kai translation addins

@@ -13,8 +13,8 @@
 .QuestView .quest-panel {
     padding : 15px;
     min-height: 306px;
-    max-height: 780px;
-    height: inherit;
+    /* max-height: 780px;
+    height: inherit; */
     display : flex;
     flex-flow : column;
 }

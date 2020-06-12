@@ -174,7 +174,8 @@ const QuestPanel = connect(
 @connect((state, props) => ({
   activeTypeTabId: get(state, 'ui.quest-browser-activeTypeTabId', 0),
   activePageTabId: get(state, 'ui.quest-browser-activePageTabId', 0),
-  questInfoSwitch: (get(state, 'config.plugin.poi-plugin-quest-info.enable', false) || find(state.plugins, {'id': 'poi-plugin-quest-info'}).enabled) &&
+  questInfoSwitch: (get(state, 'config.plugin.poi-plugin-quest-info.enable', false) 
+                    || get(find(state.plugins, {'id': 'poi-plugin-quest-info'}), 'enabled', false)) &&
                      !get(state, 'config.poi.plugin.windowmode.poi-plugin-quest-info.enable', false),
   maxPages: get(store(state), 'maxPages', {}),
   lngWikiId: window.config.get('plugin.questbrowser.lngWikiId') || 'native',
