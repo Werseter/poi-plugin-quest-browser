@@ -6,6 +6,11 @@ Quest Browser is a [poi](https://github.com/poooi/poi) plugin aiding browsing of
 
 [![npm version](https://badge.fury.io/js/poi-plugin-quest-browser.svg)](https://badge.fury.io/js/poi-plugin-quest-browser)
 
+### 1.4.1
+
+- Ported settings.es UI to use blueprint-js instead of react-bootstrap
+- Updated KC3Kai translation addins
+
 ### 1.4.0
 
 - Added partial compatibility with newer KC versions
