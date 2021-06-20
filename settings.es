@@ -1,80 +1,73 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { PropTypes } from 'prop-types'
-import { Panel, Checkbox, SplitButton, MenuItem } from 'react-bootstrap'
+import { Button, Checkbox, Menu, MenuDivider, MenuItem, Position } from '@blueprintjs/core'
 import { get, memoize } from 'lodash'
+
+import { Popover } from 'views/components/etc/overlay'
 
 import { settingsChoiseLayout } from './constants'
 
 import i18next from 'views/env-parts/i18next'
 
 const SettingsWikiIdLngMenu = connect(
-  (state, {lngWikiId}) => memoize((state) => lngWikiId)
-)(({lngWikiId, lngId, onSelect, currLngWikiId, questInfoAvail}) => {
-  if(lngId == 'div')
-    return <MenuItem divider />
-  else if(lngId == 'head')
+  (state, { lngWikiId }) => memoize((state) => lngWikiId)
+)(({ lngWikiId, lngId, onClick, currLngWikiId, questInfoAvail }) => {
+  if (lngId == 'div')
+    return <MenuDivider />
+  else if (lngId == 'head')
     return (
-      <MenuItem header>
-        {i18next.t('poi-plugin-quest-browser:KC3-header')}
-      </MenuItem>
+      <MenuDivider title={i18next.t('poi-plugin-quest-browser:KC3-header')} />
     )
   else
     return (
       <MenuItem eventKey={lngId}
-                disabled={lngId == 'questInfoTrans' && !questInfoAvail}
-                onSelect={onSelect}
-                className={lngId == currLngWikiId ? 'active' : ''}>
-        {i18next.t('poi-plugin-quest-browser:' + (lngId == 'native' ? 'none' : lngId))}
-      </MenuItem>
+        disabled={lngId == 'questInfoTrans' && !questInfoAvail}
+        onClick={onClick}
+        active={lngId == currLngWikiId}
+        text={i18next.t('poi-plugin-quest-browser:' + (lngId == 'native' ? 'none' : lngId))} />
     )
-  }
+}
 )
 
 const SettingsQuestTitleLngMenu = connect(
-  (state, {lngQuestTitles}) => memoize((state) => lngQuestTitles)
-)(({lngQuestTitles, lngId, onSelect, currLngQuestTitle, questInfoAvail}) => {
-  if(lngId == 'div')
-    return <MenuItem divider />
-  else if(lngId == 'head')
+  (state, { lngQuestTitles }) => memoize((state) => lngQuestTitles)
+)(({ lngQuestTitles, lngId, onClick, currLngQuestTitle, questInfoAvail }) => {
+  if (lngId == 'div')
+    return <MenuDivider />
+  else if (lngId == 'head')
     return (
-      <MenuItem header>
-        {i18next.t('poi-plugin-quest-browser:KC3-header')}
-      </MenuItem>
+      <MenuDivider title={i18next.t('poi-plugin-quest-browser:KC3-header')} />
     )
   else
     return (
       <MenuItem eventKey={lngId}
-                disabled={lngId == 'questInfoTrans' && !questInfoAvail}
-                onSelect={onSelect}
-                className={lngId == currLngQuestTitle ? 'active' : ''}>
-        {i18next.t('poi-plugin-quest-browser:' + lngId)}
-      </MenuItem>
+        disabled={lngId == 'questInfoTrans' && !questInfoAvail}
+        onClick={onClick}
+        active={lngId == currLngQuestTitle}
+        text={i18next.t('poi-plugin-quest-browser:' + lngId)} />
     )
-  }
+}
 )
 
 const SettingsQuestDescLngMenu = connect(
-  (state, {lngQuestDescriptions}) => memoize((state) => lngQuestDescriptions)
-)(({lngQuestDescriptions, lngId, onSelect, currLngQuestDesc, questInfoAvail}) => {
-  if(lngId == 'div')
-    return <MenuItem divider />
-  else if(lngId == 'head')
+  (state, { lngQuestDescriptions }) => memoize((state) => lngQuestDescriptions)
+)(({ lngQuestDescriptions, lngId, onClick, currLngQuestDesc, questInfoAvail }) => {
+  if (lngId == 'div')
+    return <MenuDivider />
+  else if (lngId == 'head')
     return (
-      <MenuItem header>
-        {i18next.t('poi-plugin-quest-browser:KC3-header')}
-      </MenuItem>
+      <MenuDivider title={i18next.t('poi-plugin-quest-browser:KC3-header')} />
     )
   else
     return (
       <MenuItem eventKey={lngId}
-                disabled={lngId == 'questInfoTrans' && !questInfoAvail}
-                onSelect={onSelect}
-                className={lngId == currLngQuestDesc ? 'active' : ''}>
-        {i18next.t('poi-plugin-quest-browser:' + lngId)}
-      </MenuItem>
+        disabled={lngId == 'questInfoTrans' && !questInfoAvail}
+        onClick={onClick}
+        active={lngId == currLngQuestDesc}
+        text={i18next.t('poi-plugin-quest-browser:' + lngId)} />
     )
-  }
+}
 )
 
 @connect((state, props) => ({
@@ -122,57 +115,66 @@ export class settingsClass extends Component {
         </Checkbox>
         <div style={this.props.useTranslations ? null : {display: 'none'}}>
           <p style = {true ? null : null}>Translation Sources</p>
-          <SplitButton
-            bsStyle='default'
-            title='Wiki ID'
-            key={0}
-            id={`dropdown-trans-0`}
-          >
-            { 
-              settingsChoiseLayout.map(i =>
-                <SettingsWikiIdLngMenu
-                  lngId={i}
-                  onSelect={e => this.handleWikiIdClick(i)}
-                  currLngWikiId={this.props.lngWikiId}
-                  questInfoAvail={this.props.questInfoAvail}
-                />
-              )
-            }
-          </SplitButton>
-          <SplitButton
-            bsStyle='default'
-            title='Quest Titles'
-            key={1}
-            id={`dropdown-trans-1`}
-          >
-            { 
-              settingsChoiseLayout.map(i =>
-                <SettingsQuestTitleLngMenu
-                  lngId={i}
-                  onSelect={e => this.handleQuestTitleClick(i)}
-                  currLngQuestTitle={this.props.lngQuestTitles}
-                  questInfoAvail={this.props.questInfoAvail}
-                />
-              )
-            }
-          </SplitButton>
-          <SplitButton
-            bsStyle='default'
-            title='Quest Descriptions'
-            key={2}
-            id={`dropdown-trans-2`}
-          >
-            { 
-              settingsChoiseLayout.map(i =>
-                <SettingsQuestDescLngMenu
-                  lngId={i}
-                  onSelect={e => this.handleQuestDescriptionClick(i)}
-                  currLngQuestDesc={this.props.lngQuestDescriptions}
-                  questInfoAvail={this.props.questInfoAvail}
-                />
-              )
-            }
-          </SplitButton>
+          <Popover content={
+            <Menu>
+              {
+                settingsChoiseLayout.map(i =>
+                  <SettingsWikiIdLngMenu
+                    lngId={i}
+                    onClick={e => this.handleWikiIdClick(i)}
+                    currLngWikiId={this.props.lngWikiId}
+                    questInfoAvail={this.props.questInfoAvail}
+                  />
+                )
+              }
+            </Menu>
+          }>
+            <Button
+              text='Wiki ID'
+              key={0}
+              id={`dropdown-trans-0`}
+            />
+          </Popover>
+          <Popover content={
+            <Menu>
+              {
+                settingsChoiseLayout.map(i =>
+                  <SettingsQuestTitleLngMenu
+                    lngId={i}
+                    onClick={e => this.handleQuestTitleClick(i)}
+                    currLngQuestTitle={this.props.lngQuestTitles}
+                    questInfoAvail={this.props.questInfoAvail}
+                  />
+                )
+              }
+            </Menu>
+          }>
+            <Button
+              text='Quest Titles'
+              key={1}
+              id={`dropdown-trans-1`}
+            />
+          </Popover>
+          <Popover content={
+            <Menu>
+              {
+                settingsChoiseLayout.map(i =>
+                  <SettingsQuestDescLngMenu
+                    lngId={i}
+                    onClick={e => this.handleQuestDescriptionClick(i)}
+                    currLngQuestDesc={this.props.lngQuestDescriptions}
+                    questInfoAvail={this.props.questInfoAvail}
+                  />
+                )
+              }
+            </Menu>
+          }>
+            <Button
+              text='Quest Descriptions'
+              key={2}
+              id={`dropdown-trans-2`}
+            />
+          </Popover>
         </div>
       </div>
     )
