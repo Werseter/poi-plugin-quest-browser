@@ -251,22 +251,23 @@ export class reactClass extends Component {
   }
 
   handleScroll = (e) => {
+    const activePageTabId = this.props.activePageTabId || 0;
     const activeTypeTabId = this.props.activeTypeTabId || 0;
     const currMaxPages = this.props.maxPages[activeTypeTabId] || 0;
     if(e.path.map(({ className }) => className).includes('QuestView')) {
-      if (e.deltaY < 0 && this.props.activePageTabId > 0) {
+      if (e.deltaY < 0 && activePageTabId > 0) {
         dispatch({
           type: '@@TabSwitch',
           tabInfo: {
-            'quest-browser-activePageTabId': this.props.activePageTabId - 1,
+            'quest-browser-activePageTabId': activePageTabId - 1,
           },
         })
       }
-      else if (e.deltaY > 0 && this.props.activePageTabId < currMaxPages - 1) {
+      else if (e.deltaY > 0 && activePageTabId < currMaxPages - 1) {
         dispatch({
           type: '@@TabSwitch',
           tabInfo: {
-            'quest-browser-activePageTabId': this.props.activePageTabId + 1,
+            'quest-browser-activePageTabId': activePageTabId + 1,
           },
         })
       }

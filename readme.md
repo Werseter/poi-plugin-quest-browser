@@ -6,6 +6,11 @@ Quest Browser is a [poi](https://github.com/poooi/poi) plugin aiding browsing of
 
 [![npm version](https://badge.fury.io/js/poi-plugin-quest-browser.svg)](https://badge.fury.io/js/poi-plugin-quest-browser)
 
+
+### 1.5.1
+
+- Fix scrolling on initial component entry and TabSwitch
+
 ### 1.5.0
 
 - Added scroll-wheel page scrolling to mimic in-game usage
