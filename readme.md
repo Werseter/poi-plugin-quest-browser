@@ -6,6 +6,10 @@ Quest Browser is a [poi](https://github.com/poooi/poi) plugin aiding browsing of
 
 [![npm version](https://badge.fury.io/js/poi-plugin-quest-browser.svg)](https://badge.fury.io/js/poi-plugin-quest-browser)
 
+### 1.5.0
+
+- Added scroll-wheel page scrolling to mimic in-game usage
+
 ### 1.4.1
 
 - Ported settings.es UI to use blueprint-js instead of react-bootstrap

@@ -249,6 +249,30 @@ export class reactClass extends Component {
     }
     dispatchFetchActiveCache();
   }
+
+  handleScroll = (e) => {
+    const activeTypeTabId = this.props.activeTypeTabId || 0;
+    const currMaxPages = this.props.maxPages[activeTypeTabId] || 0;
+    if(e.path.map(({ className }) => className).includes('QuestView')) {
+      if (e.deltaY < 0 && this.props.activePageTabId > 0) {
+        dispatch({
+          type: '@@TabSwitch',
+          tabInfo: {
+            'quest-browser-activePageTabId': this.props.activePageTabId - 1,
+          },
+        })
+      }
+      else if (e.deltaY > 0 && this.props.activePageTabId < currMaxPages - 1) {
+        dispatch({
+          type: '@@TabSwitch',
+          tabInfo: {
+            'quest-browser-activePageTabId': this.props.activePageTabId + 1,
+          },
+        })
+      }
+    }
+    dispatchFetchActiveCache();
+  }
   
   handlePluginSwitch = (questId) => {
     if(this.props.questInfoSwitch) {
@@ -268,10 +292,12 @@ export class reactClass extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('game.response', this.handleResponse);
+    window.removeEventListener('wheel', this.handleScroll);
   }
 
   async componentDidMount() {
     window.addEventListener('game.response', this.handleResponse);
+    window.addEventListener('wheel', this.handleScroll);
     await loadTranslations();
     dispatchFetchActiveCache();
   }
